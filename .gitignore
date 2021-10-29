@@ -50,6 +50,8 @@ local.properties
 
 # node.js
 #
+#android
+android
 node_modules/
 npm-debug.log
 yarn-error.log
