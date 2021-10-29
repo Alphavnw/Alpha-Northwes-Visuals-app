@@ -46,6 +46,7 @@ export default function Header(props) {
   const handleAdmin = _ => {
     if (cartContext.accountType === 'admin') {
       cartContext.handleMenuToggle()
+      
       props.navigation.navigate('AdminPanel')
     } else {
       cartContext.handleSignout()
@@ -113,10 +114,11 @@ export default function Header(props) {
             <Text style={[styles.btn_text]}>My Orders</Text>
           </TouchableOpacity>
           { cartContext.accountType === 'admin' ? (
+            
             <TouchableOpacity
               style={[ styles.btn]}
               onPress={ _ => handleAdmin()}>
-              <Text style={[styles.btn_text]}>Admin Panel</Text>
+             {cartContext.accountType==='admin'?<Text style={[styles.btn_text]}>Admin Panel</Text>:null}
             </TouchableOpacity>
           ) : null }
           <TouchableOpacity style={[styles.btn, styles.btn_last]} onPressIn={ _ => handleSignout()}>

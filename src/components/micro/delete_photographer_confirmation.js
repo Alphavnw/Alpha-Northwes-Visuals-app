@@ -4,14 +4,15 @@ import axios from 'axios';
 import { StyleSheet, View, Text, Dimensions,} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
+import { useState } from 'react/cjs/react.development';
 
 export default function DeletePhotographerConfirmation() {
   const cartContext = useContext(Context);
-
+  const [confirm, setConfirm] = useState(false);
   // Handle Delete Confirmation
   const handleConfirmDelete = async _ => {
     const data = { deletedAt: new Date() }
-
+      setConfirm(true);
     try {
       const token = await AsyncStorage.getItem('token');
       const config = { headers: { Authorization: token }}
@@ -39,7 +40,7 @@ export default function DeletePhotographerConfirmation() {
           <TouchableOpacity
             style={styles.confirm_btn}
             onPress={ _ => handleConfirmDelete()}>
-            <Text style={styles.confirm_btn_text}>Confirm</Text>
+            <Text style={styles.confirm_btn_text}>{confirm?"Wait...":'Confirm'}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.deny_btn}

@@ -7,6 +7,7 @@ import Store from './src/views/store.js';
 import BookingStepOne from './src/views/booking_step_one.js';
 import BookingStepTwo from  './src/views/booking_step_two.js';
 import BookingStepThree from './src/views/booking_step_three.js';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import Cart from './src/views/cart.js';
 import Profile from './src/views/profile.js';
 import Login from './src/views/login.js';
@@ -28,7 +29,13 @@ import TS from './src/views/ts.js';
 import SelectedProduct from './src/views/selected_product.js';
 
 export default function App() {
+  const STRIPE_PK = 'pk_live_AUzulzbWhPDJgwGRez3gHcBB00oJ5lfR7v';
   return (
+    <StripeProvider
+    publishableKey={STRIPE_PK}
+    urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+    merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
+  >
     <GlobalState>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Index" screenOptions={{ headerShown: false }} >
@@ -107,6 +114,7 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </GlobalState>
+    </StripeProvider>
   );
 }
 

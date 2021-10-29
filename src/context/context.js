@@ -49,6 +49,7 @@ export default React.createContext({
   changeItemQuantity: (q, el) => {},
   getMerch: _ => {},
   setCurPhotographer: (el) => {},
+  setDescription: (el) => {}, //added
   setCurGallery: (el) => {},
   handleShootLocationToggle: _ => {},
   handleBasicInfoToggle: _ => {},

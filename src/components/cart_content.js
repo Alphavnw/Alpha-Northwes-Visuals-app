@@ -6,6 +6,7 @@ import CheckIMG from '../assets/check.png';
 import { Dimensions, StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
+
 export default function CartContent(props) {
   const [total, setTotal] = useState(0);
   const [toggle, setToggle] = useState(false);
