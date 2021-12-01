@@ -3,19 +3,22 @@ import { LinearGradient } from 'expo-linear-gradient';
 import RemoveIMG from '../assets/error.png';
 import Context from '../context/context.js';
 import CheckIMG from '../assets/check.png';
-import { Dimensions, StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { Dimensions, StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import { CardField, useStripe } from '@stripe/stripe-react-native';
 
-
+import { BASE_URL } from '../helper/constant';
 export default function CartContent(props) {
   const [total, setTotal] = useState(0);
   const [toggle, setToggle] = useState(false);
   const [error, setError] = useState(false);
   const [type, setType] = useState([])
   const cartContext = useContext(Context);
-
+  const [loading,setLoading]= useState(false);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const route = useRoute();
-
+  
   useEffect(() => {
     handleTotal()
     handleType()
@@ -43,7 +46,8 @@ export default function CartContent(props) {
   }
 
   // Handle order submit button
-  const handleOrderBtn = _ => {
+  const handleOrderBtn = async() => {
+    setLoading(true);
     let name = cartContext.user.name;
     let address = cartContext.user.address;
     let nav = props.navigation;
@@ -65,13 +69,113 @@ export default function CartContent(props) {
         if (type.includes('service')) {
           if (toggle) {
             cartContext.setTotal(total);
-            nav.navigate('PaymentPortal');
+            try {
+              const data = {
+                price: cartContext.total,
+                cart: cartContext.cart,
+                user: cartContext.user,
+                // authToken: jsonRes",
+                location: cartContext.shootLocation,
+                photographer: cartContext.curPhotographer,
+                date: cartContext.date,
+              }
+              
+              const makePayment = await axios.post(`${BASE_URL}/user/pay`, data);
+              console.log(data);
+              const {paymentIntent,ephemeralKey,customer,publishableKey } = makePayment.data;
+              const { error } = await initPaymentSheet({
+                customerId: customer,
+                customerEphemeralKeySecret: ephemeralKey,
+                paymentIntentClientSecret: paymentIntent,
+                allowsDelayedPaymentMethods: false,
+              });
+              if(!error){
+                const { error } = await presentPaymentSheet({clientSecret: paymentIntent});
+                 setLoading(false)
+                if (!error) {
+                  const data = {
+                    price: cartContext.total,
+                    cart: cartContext.cart,
+                    user: cartContext.user,
+                    paymentToken: paymentIntent,
+                    location: cartContext.shootLocation,
+                    photographer: cartContext.curPhotographer,
+                    date: cartContext.date,
+                  }
+                  
+                  const createOrder = await axios.post(`${BASE_URL}/user/create-order`, data);
+                  // console.log(createOrder);
+                  if (createOrder) {
+                    Alert.alert("Success","Your order has been successfully placed. It will be processed shortly")
+                    // props.navigation.navigate('Orders');
+                    cartContext.cartRESET();
+                  } else {
+                    Alert.alert("Error","Order not created. Contact support")
+                  }
+                }
+              }
+            } catch (error) {
+              setLoading(false)
+              console.log(error);
+            }
             if (!error) setError(true)
             else return
           } else setError(true)
         } else {
           cartContext.setTotal(total);
-          nav.navigate('PaymentPortal');
+          
+          try {
+            const data = {
+              price: cartContext.total,
+              cart: cartContext.cart,
+              user: cartContext.user,
+              // authToken: jsonRes",
+              location: cartContext.shootLocation,
+              photographer: cartContext.curPhotographer,
+              date: cartContext.date,
+            }
+            
+            const makePayment = await axios.post(`${BASE_URL}/user/pay`, data);
+            console.log(data);
+            const {paymentIntent,ephemeralKey,customer,publishableKey } = makePayment.data;
+            const { error } = await initPaymentSheet({
+              customerId: customer,
+              customerEphemeralKeySecret: ephemeralKey,
+              paymentIntentClientSecret: paymentIntent,
+              allowsDelayedPaymentMethods: false,
+            });
+            if(!error){
+              const { error } = await presentPaymentSheet({clientSecret: paymentIntent});
+               setLoading(false)
+              if (!error) {
+                const data = {
+                  price: cartContext.total,
+                  cart: cartContext.cart,
+                  user: cartContext.user,
+                  paymentToken: paymentIntent,
+                  location: cartContext.shootLocation,
+                  photographer: cartContext.curPhotographer,
+                  date: cartContext.date,
+                }
+                
+                const createOrder = await axios.post(`${BASE_URL}/user/create-order`, data);
+                // console.log(createOrder);
+                if (createOrder) {
+                  Alert.alert("Success","Your order has been successfully placed. It will be processed shortly")
+                  // props.navigation.navigate('Orders');
+                  cartContext.cartRESET();
+                } else {
+                  Alert.alert("Error","Order not created. Contact support")
+                }
+              }
+            }
+          } catch (error) {
+            setLoading(false)
+            console.log(error);
+          }
+          
+          // handle payment and everything here
+          // nav.navigate('PaymentPortal');
         }
       }
     } else {
@@ -141,7 +245,7 @@ export default function CartContent(props) {
                       style={styles.cart_btn}
                       onPress={ _ => handleOrderBtn()}>
                       <Text style={styles.cart_btn_text}>
-                        { route.name === 'Cart' ? 'Order' : 'Pay With Stripe'}
+                        { route.name === 'Cart' ? 'Order' : loading?"Processing...":'Pay With Stripe'}
                       </Text>
                     </TouchableOpacity>
                   </LinearGradient>

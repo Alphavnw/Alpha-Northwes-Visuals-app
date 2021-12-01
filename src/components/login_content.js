@@ -4,10 +4,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import LogoIMG from '../assets/logo_large_blue.png';
 import Context from '../context/context.js';
 import { Dimensions, StyleSheet, View, TextInput, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { BASE_URL } from '../helper/constant';
 
 export default function Login(props) {
   const cartContext = useContext(Context);
   const [email, setEmail] = useState('');
+  const [login, setLogin] = useState(false);
+  const [signup, setSignup] = useState(false);
   const [password, setPassword] = useState('');
   const [err, setErr] = useState();
 
@@ -23,15 +26,19 @@ export default function Login(props) {
     
     if (validateEmail() && password) {
       const auth = { email: email, password: password };
-
+       console.log(BASE_URL);
       try {
-        await axios.post('https://avnw-api.herokuapp.com/user/login', auth)
+         setLogin(true)
+        await axios.post(`${BASE_URL}/user/login`, auth)
           .then(res => {
             cartContext.setLoginToken(res.data.token, res.data.user[0]);
             props.navigation.navigate(cartContext.previousRoute);
             setErr(0);
+            setLogin(false);
           })
           .catch(err => {
+            console.log(err);
+            setLogin(false);
             if (err.response.status === 500) {
               setPassword('');
               setErr(1);
@@ -56,13 +63,16 @@ export default function Login(props) {
       };
 
       try {
-        await axios.post('https://avnw-api.herokuapp.com/user/register', user)
+        setSignup(true);
+        await axios.post(`${BASE_URL}/user/register`, user)
           .then(res => {
             cartContext.setLoginToken(res.data.token, res.data.user);
             props.navigation.navigate(cartContext.previousRoute);
             setErr(0);
+            setSignup(false);
           })
           .catch(err => {
+            setSignup(false);
             if (err.response.status === 500) {
               setPassword('');
               setErr(1);
@@ -105,12 +115,12 @@ export default function Login(props) {
             <TouchableOpacity
               style={[styles.btn, styles.btn_login]}
               onPress={ _ => handleSigninSubmit()}>
-              <Text style={[styles.btn_text, styles.btn_text_login]}>Login</Text>
+              <Text style={[styles.btn_text, styles.btn_text_login]}>{login?"Please wait...":"Login"}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.btn, styles.btn_signup]}
               onPress={ _ => handleSignupSubmit()}>
-              <Text style={[styles.btn_text, styles.btn_text_signup]}>Sign Up</Text>
+              <Text style={[styles.btn_text, styles.btn_text_signup]}>{signup?"Please wait...":"Sign Up"}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -35,7 +35,7 @@ export default function SelectedMerchOrderContentADMIN(props) {
       const config = { headers: { Authorization: token }}
       let id = cartContext.selectedMerchOrder.id;
 
-      await axios.put(`https://avnw-api.herokuapp.com/merch-orders/${id}/edit`, order, config)
+      await axios.put(`${BASE_URL}/merch-orders/${id}/edit`, order, config)
         .then(res => {
           cartContext.setMerchOrdersALL(res.data);
           setToggle(false);

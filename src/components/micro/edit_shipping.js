@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Context from '../../context/context.js';
 import { Dimensions, StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { BASE_URL } from '../../helper/constant.js';
 
 export default function EditShipping(props) {
   const cartContext = useContext(Context);
@@ -94,7 +95,7 @@ export default function EditShipping(props) {
         const config = { headers: { Authorization: token }};
         const id = cartContext.user.id;
   
-        await axios.put(`https://avnw-api.herokuapp.com/user/${id}`, location, config)
+        await axios.put(`${BASE_URL}/user/${id}`, location, config)
         .then(res => {
           cartContext.setUser(res.data[0]);
           cartContext.handleEditShippingToggle();

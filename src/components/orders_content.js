@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useRoute } from '@react-navigation/native';
 import Context from '../context/context.js';
 import { Dimensions, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { BASE_URL } from '../helper/constant.js';
 
 export default function OrdersContent(props) {
   const [toggleMerch, setToggleMerch] = useState(true);
@@ -23,7 +24,7 @@ export default function OrdersContent(props) {
     const config = { headers: { Authorization: token }}
 
     try {
-      await axios.get(`https://avnw-api.herokuapp.com/user/${id}/merch-orders`, config)
+      await axios.get(`https://${BASE_URL}/user/${id}/merch-orders`, config)
       .then(res => {
         cartContext.setUserMerchOrders(res.data)
         console.log(res.data);
@@ -39,7 +40,7 @@ export default function OrdersContent(props) {
     const config = { headers: { Authorization: token }}
 
     try {
-      await axios.get(`https://avnw-api.herokuapp.com/user/${id}/service-orders`, config)
+      await axios.get(`https://${BASE_URL}/user/${id}/service-orders`, config)
       .then(res => cartContext.setUserServiceOrders(res.data))
       .catch(err => console.log(err))
     } catch (err) { console.log(err)}

@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react'
 import Context from '../../context/context.js';
 import axios from 'axios';
-import { StyleSheet, Dimensions, ActivityIndicator,View,Button,Text } from 'react-native'
+import { StyleSheet, Dimensions, ActivityIndicator,View,Button,Text, Alert } from 'react-native'
 import { useRoute } from '@react-navigation/native';
 import { WebView } from 'react-native-webview'
 import { CardField, useStripe } from '@stripe/stripe-react-native';
+import { BASE_URL } from '../../helper/constant.js';
 
-const STRIPE_PK = 'pk_live_AUzulzbWhPDJgwGRez3gHcBB00oJ5lfR7v';
+
 
 export default function StripeCheckout(props) {
   const [loading, setLoading] = useState(false);
   const cartContext = useContext(Context);
+  const {confirmPayment} = useStripe();
    const[err,setErr]=useState(0)
   useEffect( _ => {
     convertCartToDesc();
@@ -39,11 +41,21 @@ export default function StripeCheckout(props) {
         date: cartContext.date,
       }
 
-      const makePayment = await axios.post(`https://avnw-api.herokuapp.com/user/pay`, data);
-       console.log(makePayment);
+      const makePayment = await axios.post(`${BASE_URL}/user/pay`, data);
       if (makePayment) {
-        props.navigation.navigate('Orders');
-        cartContext.cartRESET();
+        const {paymentIntent} = makePayment.data;
+        console.log(paymentIntent);
+         const { error} = await confirmPayment(`${paymentIntent}`,{
+           type: 'Card'
+         });
+         
+         if(!error){
+          props.navigation.navigate('Orders');
+          cartContext.cartRESET();
+         }else{
+           console.log(error);
+           Alert.alert("Error", `${error.message}`)
+         }
         setLoading(false);
       } else {
         console.log('Could not make the payment');
@@ -71,7 +83,7 @@ export default function StripeCheckout(props) {
                </Text>:null}
       <Text style={{color:'white',fontSize:20,textAlign:'center'}}>Enter Your Card below to Proceed</Text>
     <CardField
-      postalCodeEnabled={true}
+      postalCodeEnabled={false}
       placeholder={{
         number: '4242 4242 4242 4242',
       }}
@@ -83,12 +95,6 @@ export default function StripeCheckout(props) {
         width: '100%',
         height: 50,
         marginVertical: 30,
-      }}
-      onCardChange={(cardDetails) => {
-        console.log('cardDetails', cardDetails);
-      }}
-      onFocus={(focusedField) => {
-        console.log('focusField', focusedField);
       }}
     />
      <Button onPress={onCheckStatus} title={loading?"Processing...":"PAY NOW"} disabled={loading} />

@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
 import Header from '../../components/header.js';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { BASE_URL } from '../../helper/constant.js';
 
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? getStatusBarHeight() : 0;
 
@@ -94,7 +95,7 @@ export default function ProductForm(props) {
         const token = await AsyncStorage.getItem('token');
         const config = { headers: { Authorization: token }}
 
-        await axios.post('https://avnw-api.herokuapp.com/store/', product, config)
+        await axios.post(`${BASE_URL}/store/`, product, config)
           .then(res => {
             cartContext.setProducts(res.data);
             props.navigation.navigate('AdminPanel')
@@ -126,7 +127,7 @@ export default function ProductForm(props) {
 
         console.log(id);
 
-        await axios.put(`https://avnw-api.herokuapp.com/store/${id}`, product, config)
+        await axios.put(`${BASE_URL}/store/${id}`, product, config)
           .then(res => {
             cartContext.setProducts(res.data);
             props.navigation.navigate('AdminPanel')

@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
 import Header from '../../components/header.js';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { BASE_URL } from '../../helper/constant.js';
 
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? getStatusBarHeight() : 0;
 
@@ -74,7 +75,7 @@ export default function ServiceForm(props) {
         const token = await AsyncStorage.getItem('token');
         const config = { headers: { Authorization: token }}
 
-        await axios.post('https://avnw-api.herokuapp.com/services/', service, config)
+        await axios.post(`${BASE_URL}/services/`, service, config)
           .then(res => {
             cartContext.setServices(res.data);
             props.navigation.navigate('AdminPanel')
@@ -98,7 +99,7 @@ export default function ServiceForm(props) {
         const config = { headers: { Authorization: token }}
         let id = cartContext.serviceEditing.id;
 
-        await axios.put(`https://avnw-api.herokuapp.com/services/${id}`, service, config)
+        await axios.put(`${BASE_URL}/services/${id}`, service, config)
           .then(res => {
             cartContext.setServices(res.data);
             props.navigation.navigate('AdminPanel')

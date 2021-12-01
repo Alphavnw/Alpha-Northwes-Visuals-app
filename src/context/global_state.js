@@ -2,6 +2,7 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Context from './context';
+import { BASE_URL } from '../helper/constant';
 
 export default class GlobalState extends React.Component{
   state = {
@@ -113,7 +114,7 @@ export default class GlobalState extends React.Component{
 
   getPhotographers = async _ => {
     try {
-      await axios.get('https://avnw-api.herokuapp.com/photographers')
+      await axios.get(`${BASE_URL}/photographers`)
       .then(res => this.setState({ photographers: res.data }))
         .catch(err => console.log(err))
     } catch (err) { console.log(err) }
@@ -121,7 +122,7 @@ export default class GlobalState extends React.Component{
 
   getServices = async _ => {
     try {
-      await axios.get('https://avnw-api.herokuapp.com/services')
+      await axios.get(`${BASE_URL}/services`)
         .then(res => this.setState({ services: res.data }))
         .catch(err => console.log(err) )
     } catch (err) { console.log(err) }
@@ -129,7 +130,7 @@ export default class GlobalState extends React.Component{
 
   getMerch = async _ => {
     try {
-      await axios.get('https://avnw-api.herokuapp.com/store')
+      await axios.get(`${BASE_URL}/store`)
         .then(res => this.setState({ merch: res.data }))
         .catch(err => console.log(err) )
     } catch (err) { console.log(err) }

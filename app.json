@@ -19,11 +19,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.alphavnw.alphavisualsnw",
+      "bundleIdentifier": "com.alphavnw.android",
       "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.alphavnw.alphavisualsnw",
+      "package": "com.alphavnw.android",
       "versionCode": 1,
       "permissions": []
     },

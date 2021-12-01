@@ -15,7 +15,7 @@ export default function StoreContent(props) {
     props.navigation.navigate('SelectedProduct');
   }
 
-  console.log(cartContext.cart);
+  console.log(cartContext.merch);
 
   return (
     <View style={styles.container}>

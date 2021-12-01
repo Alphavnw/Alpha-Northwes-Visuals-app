@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Context from '../context/context.js';
 import { Dimensions, StyleSheet, StatusBar, View, TouchableOpacity, TextInput, Text } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { BASE_URL } from '../helper/constant.js';
 
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? getStatusBarHeight() : 0;
 
@@ -111,7 +112,7 @@ export default function OrderingStepTwo(props) {
         const config = { headers: { Authorization: token }};
         const id = cartContext.user.id;
   
-        await axios.put(`https://avnw-api.herokuapp.com/user/${id}`, location, config)
+        await axios.put(`${BASE_URL}/user/${id}`, location, config)
         .then(res => {
           cartContext.setUser(res.data[0]);
           nav.navigate('MerchOrderOverview')

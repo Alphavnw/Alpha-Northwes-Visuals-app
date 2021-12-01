@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from 'react-native';
 import Context from '../../context/context.js';
+import { BASE_URL } from '../../helper/constant.js';
 
 export default function MerchOrderContent(props) {
   const [toggle, setToggle] = useState(false);
@@ -18,7 +19,7 @@ export default function MerchOrderContent(props) {
     const config = { headers: { Authorization: token }}
 
     try {
-      await axios.get(`https://avnw-api.herokuapp.com/merch-orders`, config)
+      await axios.get(`${BASE_URL}/merch-orders`, config)
       .then(res => cartContext.setMerchOrdersALL(res.data))
       .catch(err => console.log(err))
     } catch (err) { console.log(err)}

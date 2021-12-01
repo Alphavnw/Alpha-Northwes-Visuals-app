@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import Context from '../context/context.js';
 import StripeCheckout from './micro/stripe-checkout.js';
+import { CardField, useStripe } from '@stripe/stripe-react-native';
 import { StyleSheet, View, SafeAreaView, Text,TouchableOpacity, StatusBar } from 'react-native';
 
 export default function PaymentPortal(props) {
@@ -10,6 +11,38 @@ export default function PaymentPortal(props) {
     console.log('Closed');
     props.navigation.navigate('MerchOrderOverview');
   }
+
+
+  
+  const onCheckStatus = async (res) => {
+  
+    let jsonRes = JSON.parse(res);
+
+    try {
+      const data = {
+        price: cartContext.total,
+        cart: cartContext.cart,
+        user: cartContext.user,
+        authToken: jsonRes,
+        location: cartContext.shootLocation,
+        photographer: cartContext.curPhotographer,
+        date: cartContext.date,
+      }
+
+      const makePayment = await axios.post(`${BASE_URL}/user/pay`, data);
+       console.log(makePayment);
+      if (makePayment) {
+
+     
+        // props.navigation.navigate('Orders');
+        // cartContext.cartRESET();
+        setLoading(false);
+      } else {
+        console.log('Could not make the payment')
+      };
+    } catch (err) { console.log(err.response), setLoading(false); setErr(1) }
+  }
+
 
   const handleSuccess = _ => {
     console.log('Success');
@@ -34,7 +67,7 @@ export default function PaymentPortal(props) {
         amount={cartContext.total}
         imageUrl="https://pbs.twimg.com/profile_images/778378996580888577/MFKh-pNn_400x400.jpg"
         storeName="Alpha Visuals"
-        description="Test"
+        description="Merchant Online Payment"
         currency="USD"
         allowRememberMe={false}
         prepopulatedEmail={cartContext.user.email}

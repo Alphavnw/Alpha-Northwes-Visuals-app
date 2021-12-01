@@ -5,6 +5,7 @@ import { StyleSheet, View, Text, Dimensions,} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
 import { useState } from 'react/cjs/react.development';
+import { BASE_URL } from '../../helper/constant.js';
 
 export default function DeletePhotographerConfirmation() {
   const cartContext = useContext(Context);
@@ -18,7 +19,7 @@ export default function DeletePhotographerConfirmation() {
       const config = { headers: { Authorization: token }}
       let id = cartContext.photographerEdit.id;
 
-      await axios.put(`https://avnw-api.herokuapp.com/photographers/${id}`, data, config)
+      await axios.put(`${BASE_URL}/photographers/${id}/delete`, data, config)
         .then(res => {
           cartContext.setPhotographers(res.data);
           cartContext.handleDeletePhotographerConfirmation();

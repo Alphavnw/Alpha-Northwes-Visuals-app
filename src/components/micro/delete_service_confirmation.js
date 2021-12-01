@@ -4,6 +4,7 @@ import axios from 'axios';
 import { StyleSheet, View, Text, Dimensions,} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
+import { BASE_URL } from '../../helper/constant.js';
 
 export default function DeleteServiceConfirmation() {
   const cartContext = useContext(Context);
@@ -17,7 +18,7 @@ export default function DeleteServiceConfirmation() {
       const config = { headers: { Authorization: token }}
       let id = cartContext.serviceEditing.id;
 
-      await axios.put(`https://avnw-api.herokuapp.com/services/${id}`, data, config)
+      await axios.put(`${BASE_URL}/services/${id}`, data, config)
         .then(res => {
           cartContext.setServices(res.data);
           cartContext.handleDeleteServiceConfirmation();

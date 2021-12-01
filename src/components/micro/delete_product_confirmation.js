@@ -4,25 +4,28 @@ import axios from 'axios';
 import { StyleSheet, View, Text, Dimensions,} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
+import { BASE_URL } from '../../helper/constant.js';
+import { useState } from 'react/cjs/react.development';
 
 export default function DeleteProductConfirmation() {
   const cartContext = useContext(Context);
-
+  const [deletes, setDelete] = useState(false)
   // Handle Delete Confirmation
   const handleConfirmDelete = async _ => {
     const data = { deletedAt: new Date() }
-
+     setDelete(true)
     try {
       const token = await AsyncStorage.getItem('token');
       const config = { headers: { Authorization: token }}
       let id = cartContext.productEditing.id;
 
-      await axios.put(`https://avnw-api.herokuapp.com/store/${id}`, data, config)
+      await axios.put(`${BASE_URL}/store/${id}`, data, config)
         .then(res => {
           cartContext.setProducts(res.data);
           cartContext.handleDeleteProductConfirmation();
+          setDelete(false);
         })
-        .catch(err => console.log(err))
+        .catch(err => {setDelete(false)})
     } catch (err) { console.log(err) }
   }
 
@@ -39,7 +42,7 @@ export default function DeleteProductConfirmation() {
           <TouchableOpacity
             style={styles.confirm_btn}
             onPress={ _ => handleConfirmDelete()}>
-            <Text style={styles.confirm_btn_text}>Confirm</Text>
+            <Text style={styles.confirm_btn_text}>{deletes?"Wait...":"Confirm"}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.deny_btn}
