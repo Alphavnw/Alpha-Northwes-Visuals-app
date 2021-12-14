@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext , useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { StyleSheet, View, Text, Dimensions,} from 'react-native';
@@ -8,12 +8,13 @@ import { BASE_URL } from '../../helper/constant.js';
 
 export default function DeleteServiceConfirmation() {
   const cartContext = useContext(Context);
-
+ const [deletes, setDelete] = useState(false)
   // Handle Delete Confirmation
   const handleConfirmDelete = async _ => {
     const data = { deletedAt: new Date() }
 
     try {
+      setDelete(true);
       const token = await AsyncStorage.getItem('token');
       const config = { headers: { Authorization: token }}
       let id = cartContext.serviceEditing.id;
@@ -40,7 +41,7 @@ export default function DeleteServiceConfirmation() {
           <TouchableOpacity
             style={styles.confirm_btn}
             onPress={ _ => handleConfirmDelete()}>
-            <Text style={styles.confirm_btn_text}>Confirm</Text>
+            <Text style={styles.confirm_btn_text}>{deletes?"Wait...":"Confirm"}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.deny_btn}

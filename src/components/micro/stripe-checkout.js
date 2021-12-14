@@ -2,8 +2,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import Context from '../../context/context.js';
 import axios from 'axios';
 import { StyleSheet, Dimensions, ActivityIndicator,View,Button,Text, Alert } from 'react-native'
-import { useRoute } from '@react-navigation/native';
-import { WebView } from 'react-native-webview'
 import { CardField, useStripe } from '@stripe/stripe-react-native';
 import { BASE_URL } from '../../helper/constant.js';
 

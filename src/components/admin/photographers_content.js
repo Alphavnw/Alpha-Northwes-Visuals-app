@@ -1,15 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions, Alert } from 'react-native';
 import DeletePhotographerConfirmation from '../micro/delete_photographer_confirmation.js';
 import EditIMG from '../../assets/edit.png';
 import AddIMG from '../../assets/add.png';
 import AddOnIMG from '../../assets/add_on.png';
 import DeleteIMG from '../../assets/trash.png';
 import Context from '../../context/context.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { BASE_URL } from '../../helper/constant.js';
 
 
 export default function PhotographersContent(props) {
   const [toggle, setToggle] = useState(false);
+  const [deletePh, setDeletePh] = useState(false)
   const cartContext = useContext(Context);
   
   useEffect( _ => {
@@ -29,14 +33,21 @@ export default function PhotographersContent(props) {
     }
   }
 
-  // Handle Photographer Delete
+  
   const handleDeletePhotographer = el => {
     cartContext.setEditPhotographer(el);
-    cartContext.handleDeletePhotographerConfirmation();
+    
+    cartContext.handleDeletePhotographerConfirmation(true);
+    
   }
 
+
+
   return (
+    <>
+ 
     <View style={styles.container}>
+    {cartContext.deletePhotographerConfirmation? <DeletePhotographerConfirmation /> : null }
       <TouchableOpacity
         style={[styles.header, toggle ? styles.header_on : null]}
         disabled={cartContext.menuToggle}
@@ -57,9 +68,11 @@ export default function PhotographersContent(props) {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
+      
       { toggle ? (
+
         <View style={styles.container_box}>
-          { cartContext.deletePhotographerConfirmation ? <DeletePhotographerConfirmation /> : null }
+      
           { cartContext.photographers ? cartContext.photographers.map(el => {
             return (
               <View style={styles.photographer_card} key={el.id}>
@@ -81,7 +94,8 @@ export default function PhotographersContent(props) {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.btn]}
-                    onPress={ _ => handleDeletePhotographer(el)}>
+                    onPress={ _ => handleDeletePhotographer(el)}
+              >
                     <Image source={DeleteIMG} style={[styles.btn_IMG]} />
                   </TouchableOpacity>
                 </View>
@@ -91,6 +105,7 @@ export default function PhotographersContent(props) {
         </View>
       ) : null }
     </View>
+    </>
   );
 };
 

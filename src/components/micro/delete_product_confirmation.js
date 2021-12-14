@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { StyleSheet, View, Text, Dimensions,} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
 import { BASE_URL } from '../../helper/constant.js';
-import { useState } from 'react/cjs/react.development';
+
 
 export default function DeleteProductConfirmation() {
   const cartContext = useContext(Context);
@@ -18,7 +18,6 @@ export default function DeleteProductConfirmation() {
       const token = await AsyncStorage.getItem('token');
       const config = { headers: { Authorization: token }}
       let id = cartContext.productEditing.id;
-
       await axios.put(`${BASE_URL}/store/${id}`, data, config)
         .then(res => {
           cartContext.setProducts(res.data);

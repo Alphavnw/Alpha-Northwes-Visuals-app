@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { StyleSheet, View, Text, Dimensions,} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../context/context.js';
-import { useState } from 'react/cjs/react.development';
 import { BASE_URL } from '../../helper/constant.js';
 
 export default function DeletePhotographerConfirmation() {
@@ -32,25 +31,25 @@ export default function DeletePhotographerConfirmation() {
   const handleCancelDelete = _ => cartContext.handleDeletePhotographerConfirmation();
 
   return (
-    <View>
-      <View style={styles.wrap}>
-        <Text style={styles.text}>
-          Are you sure you want to delete {cartContext.photographerEdit.name}
-        </Text>
-        <View style={styles.btns}>
-          <TouchableOpacity
-            style={styles.confirm_btn}
-            onPress={ _ => handleConfirmDelete()}>
-            <Text style={styles.confirm_btn_text}>{confirm?"Wait...":'Confirm'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.deny_btn}
-            onPress={ _ => handleCancelDelete()}>
-            <Text style={styles.deny_btn_text}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+     
+    <View style={styles.wrap}>
+    <Text style={styles.text}>
+      Are you sure you want to delete {cartContext.photographerEdit.name}
+    </Text>
+    <View style={styles.btns}>
+      <TouchableOpacity
+        style={styles.confirm_btn}
+        onPress={ _ => handleConfirmDelete()}>
+        <Text style={styles.confirm_btn_text}>{confirm?"Wait...":'Confirm'}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.deny_btn}
+        onPress={ _ => handleCancelDelete()}>
+        <Text style={styles.deny_btn_text}>Cancel</Text>
+      </TouchableOpacity>
     </View>
+    </View> 
+    
   )
 };
 
@@ -113,3 +112,6 @@ const styles = StyleSheet.create({
           fontWeight: 'bold',
         },
 });
+
+
+

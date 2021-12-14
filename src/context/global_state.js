@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{Component} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Context from './context';
@@ -74,7 +74,6 @@ export default class GlobalState extends React.Component{
 
   setLoginToken = async (token, user) => {
     const jsonUser = JSON.stringify(user);
-    console.log(jsonUser);
     try {
        await AsyncStorage.setItem('token', token)
        await AsyncStorage.setItem('user', jsonUser)
@@ -225,8 +224,8 @@ export default class GlobalState extends React.Component{
     this.setState({ productEditing: el })
   }
 
-  handleDeletePhotographerConfirmation = _ => {
-    let toggle = this.state.deletePhotographerConfirmation;
+  handleDeletePhotographerConfirmation=(el)=>{
+    const toggle = this.state.deletePhotographerConfirmation;
     this.setState({ deletePhotographerConfirmation: !toggle});
   }
 
